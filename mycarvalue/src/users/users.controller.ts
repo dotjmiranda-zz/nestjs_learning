@@ -30,17 +30,6 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
-  // @Get('whoami')
-  // async whoAmI(@Session() session: any) {
-  //   const user = await this.usersService.findOne(session.userId);
-
-  //   if (!user) {
-  //     throw new ForbiddenException('Currently not logged in');
-  //   }
-
-  //   return user;
-  // }
-
   @Get('whoami')
   @UseGuards(AuthGuard)
   whoAmI(@CurrentUser() user: User) {
