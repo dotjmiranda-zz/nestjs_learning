@@ -20,13 +20,32 @@ describe('Authentication System', () => {
 
     return request(app.getHttpServer())
       .post('/auth/signup')
-      .send({
-        email: sentEmail,
-        password: 'asdf',
-      })
+      .send({ email: sentEmail, password: 'asdf' })
       .expect(201)
       .then((res) => {
         const { id, email } = res.body;
+        expect(id).toBeDefined();
+        expect(email).toEqual(sentEmail);
+      });
+  });
+
+  it('signup as a new user then get the currently logged in user', async () => {
+    const sentEmail = 'asdf@asdf.com';
+
+    const res = await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({ email: sentEmail, password: 'asdf' })
+      .expect(201);
+
+    const cookie = res.get('Set-Cookie');
+
+    await request(app.getHttpServer())
+      .get('/auth/whoami')
+      .set('Cookie', cookie)
+      .expect(200)
+      .then((res) => {
+        const { id, email } = res.body;
+
         expect(id).toBeDefined();
         expect(email).toEqual(sentEmail);
       });
